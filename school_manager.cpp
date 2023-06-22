@@ -172,7 +172,7 @@ namespace academic{
                 first = false;
                 std::cout << m -> first_name << " " << m -> last_name;
             }
-            std::cout << endl;
+            std::cout << "\n\n";
         }
     }
 
@@ -256,18 +256,56 @@ namespace loadStore{
     }
 
     void writeSchoolToCSV(academic::school* school_ref, std::string studentsFilename, std::string clubsFilename){
-        int x = 3;
+        ofstream studentFile(studentsFilename);
+        ofstream clubFile(clubsFilename);
+
+        studentFile << "id,first_name,last_name\n";
+        for (auto s: school_ref -> student_list){
+            studentFile << s.id << "," << s.first_name << "," << s.last_name << "\n";
+        }
+
+        clubFile << "id,name,president,members\n";
+        for (auto c: school_ref -> club_list){
+            clubFile << c.id << "," << c.name << "," << c.president -> id << ",";
+            for (auto m: c.members_list){
+                clubFile << m -> id << " ";
+            }
+            clubFile << "\n";
+        }
     }
 
 
 }
 
 int main(){
-    academic::school s = loadStore::loadSchoolFromCSV("students.csv", "clubs.csv", "school_info.txt");
+    string mainpath = "D:\\Summer_2023\\C++\\SchoolManager\\SchoolManagement";
+    academic::school s = loadStore::loadSchoolFromCSV(mainpath + "\\students.csv", mainpath + "\\clubs.csv", mainpath + "\\school_info.txt");
     std::cout << s.name << endl;
     std::cout << s.address << endl;
-    std::cout << "Students: \n";
+    std::cout << "\nStudents: \n";
     s.printAllStudents();
-    std::cout << "Clubs: \n";
+    std::cout << "\nClubs: \n";
     s.printAllClubs();
+
+    academic::school newSchool = academic::school("University of Miami", "1320 S Dixie Hwy, Coral Gables, FL 33146");
+    newSchool.addStudent(academic::student("John", "Smith", 1, &newSchool));
+    newSchool.addStudent(academic::student("Jane", "Doe", 2, &newSchool));
+    newSchool.addStudent(academic::student("Bob", "Jones", 3, &newSchool));
+    newSchool.addStudent(academic::student("Mary", "Johnson", 4, &newSchool));
+    newSchool.addStudent(academic::student("Joe", "Brown", 5, &newSchool));
+    newSchool.addStudent(academic::student("Sally", "Miller", 6, &newSchool));
+
+    academic::club c1 = academic::club("Chess Club", newSchool.getStudentByID(1), 1);
+    c1.addMember(newSchool.getStudentByID(1));
+    c1.addMember(newSchool.getStudentByID(4));
+    c1.addMember(newSchool.getStudentByID(6));
+    newSchool.addClub(c1);
+
+    academic::club c2 = academic::club("Soccer Club", newSchool.getStudentByID(2), 2);
+    c2.addMember(newSchool.getStudentByID(2));
+    c2.addMember(newSchool.getStudentByID(3));
+    c2.addMember(newSchool.getStudentByID(5));
+    newSchool.addClub(c2);
+
+    loadStore::writeSchoolToCSV(&newSchool, mainpath + "\\students_out.csv", mainpath + "\\clubs_out.csv");
 }

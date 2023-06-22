@@ -1,0 +1,19 @@
+Student:
+vector<club*> getClubs();
+
+
+School:
+student* getStudentByID(int id)
+student* getStudentByName(string first_name, string last_name)
+void addStudent(student s)
+void removeStudentByName(string first_name, string last_name)
+club* getClubById(int club_id)
+club* getClubByName(string club_name)
+void addClub(club c)
+void removeClubByName(string club_name)
+void printAllStudents()
+void printAllClubs()
+
+Club:
+void addMember(student s)
+void removeMemberByID(int student_id)
